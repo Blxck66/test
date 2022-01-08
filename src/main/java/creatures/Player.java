@@ -1,7 +1,7 @@
 package creatures;
 
 import common.CommonValues;
-import creatures.projektil.Knife;
+import creatures.projektil.ProjectileManager;
 import images.Assets;
 
 import java.awt.*;
@@ -17,7 +17,7 @@ public class Player
 
     private char shootDirection;
 
-    private Knife knife;
+    private ProjectileManager projManager;
 
     /*
     private int x;
@@ -36,8 +36,7 @@ public class Player
         this.idle = false;
         looksToRight = true;
         shootDirection = 'r';
-        knife = new Knife();
-
+        projManager = new ProjectileManager(0, 1);
     }
 
     @Override
@@ -164,7 +163,7 @@ public class Player
                 }
                 break;
         }
-        knife.render(g);
+        projManager.render(g);
     }
 
     public boolean action(String action)
@@ -174,6 +173,12 @@ public class Player
 
         switch (action)
         {
+
+            case "shoot" -> {
+                return projManager.shoot(shootDirection, x, y);
+            }
+
+/*
             case "shoot":
                 if (!knife.isThrown())
                 {
@@ -184,8 +189,10 @@ public class Player
                 {
                     return false;
                 }
+*/
 
-            case "walk_right":
+            case "walk_right" -> {
+                shootDirection = 'r';
                 currentFrame = currentFrame >= 15 || currentFrame < 4 ? 4 : currentFrame + 1;
                 looksToRight = true;
                 if (!(x + CommonValues.fieldsize + 1 >= (CommonValues.width - 1) * CommonValues.fieldsize))
@@ -193,30 +200,35 @@ public class Player
                     x = (x + ((CommonValues.fieldsize) / 10));
                 }
                 return true;
-
-            case "walk_left":
+            }
+            case "walk_left" -> {
+                shootDirection = 'l';
                 currentFrame = currentFrame >= 27 || currentFrame < 16 ? 16 : currentFrame + 1;
                 looksToRight = false;
-
                 if ((x - ((CommonValues.fieldsize) / 10)) > CommonValues.fieldsize)
                 {
                     x = (x - ((CommonValues.fieldsize) / 10));
                 }
                 return true;
-            case "walk_up":
+            }
+            case "walk_up" -> {
+                shootDirection = 'u';
                 currentFrame = currentFrame >= 39 || currentFrame < 28 ? 28 : currentFrame + 1;
                 if ((y - ((CommonValues.fieldsize) / 10)) > CommonValues.fieldsize * 3)
                 {
                     y = (y - ((CommonValues.fieldsize) / 10));
                 }
                 return true;
-            case "walk_down":
+            }
+            case "walk_down" -> {
+                shootDirection = 'd';
                 currentFrame = currentFrame >= 39 || currentFrame < 28 ? 28 : currentFrame + 1;
                 if ((y + ((CommonValues.fieldsize) / 10)) < (CommonValues.height - 1) * CommonValues.fieldsize)
                 {
                     y = (y + ((CommonValues.fieldsize) / 10));
                 }
                 return true;
+            }
         }
         return false;
     }
@@ -238,8 +250,7 @@ public class Player
         {
             quarter();
         }
-
-        knife.tick();
+        projManager.tick();
     }
 
     private void perSecond()

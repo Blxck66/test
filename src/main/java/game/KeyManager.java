@@ -27,7 +27,7 @@ public class KeyManager
         shoot = keys[KeyEvent.VK_J];
         if (shoot)
         {
-            if (!CreatureManager.player.action("shoot_up"))
+            if (!CreatureManager.player.action("shoot"))
             {
                 movement();
             }

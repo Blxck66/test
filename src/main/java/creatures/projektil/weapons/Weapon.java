@@ -1,33 +1,37 @@
-package creatures.projektil;
+package creatures.projektil.weapons;
 
 import common.CommonValues;
-import images.Assets;
+import creatures.projektil.ProjectileManager;
 
 import java.awt.*;
 
-public class Knife
+public abstract class Weapon
 {
-    protected char dir;
+    private char dir;
 
     protected int x;
 
     protected int y;
 
-    boolean thrown;
+    protected double speed;
 
-    protected static final double speed = 0.5;
+    boolean thrown;
 
     private int halfSecondCount = 0;
 
-    public void shoot(char dir, int x, int y)
+    public abstract void render(Graphics g);
+
+    protected void shoot(char dir, int x, int y)
     {
+        System.out.println("ok");
         this.dir = dir;
         this.x = x;
         this.y = y;
         thrown = true;
+        ProjectileManager.setThrown(ProjectileManager.getThrown() - 1);
     }
 
-    public void tick()
+    protected void tick()
     {
         if (thrown)
         {
@@ -37,23 +41,14 @@ public class Knife
                 halfSecond();
             }
         }
-
     }
 
-    public void render(Graphics g)
-    {
-        if (thrown)
-        {
-            g.drawImage(Assets.knife, x, y, null);
-        }
-
-    }
-
-    private void halfSecond()
+    protected void halfSecond()
     {
         switch (dir)
         {
             case 'u':
+                System.out.printf("case u \n");
                 if ((this.y - (CommonValues.fieldsize * speed)) > 0)
                 {
                     this.y -= (CommonValues.fieldsize * speed);
@@ -61,6 +56,7 @@ public class Knife
                 else
                 {
                     thrown = false;
+                    ProjectileManager.setThrown(ProjectileManager.getThrown() + 1);
                 }
                 break;
 
@@ -74,13 +70,12 @@ public class Knife
                     thrown = false;
                 }
                 break;
-
         }
-
     }
 
     public boolean isThrown()
     {
         return thrown;
     }
+
 }
